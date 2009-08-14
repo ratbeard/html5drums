@@ -4,6 +4,7 @@ source = Rush.launch_dir['source.html']
 out = Rush.launch_dir['index.html']
 sounds = Rush.launch_dir['drumkit/*.wav']
 
+task :default => :compile
   
 desc "Copy in sounds file paths as <audio> tags"
 task :compile => [:copy_source, :insert_audio_tags ]
