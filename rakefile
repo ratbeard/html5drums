@@ -1,0 +1,25 @@
+require 'rush'
+
+
+source = Rush.launch_dir['source.html']
+out = Rush.launch_dir['index.html']
+sounds = Rush.launch_dirp['drumkit/*.wav']
+
+  
+desc "Copy in sounds file paths as <audio> tags"
+task :compile => [:copy_source, :insert_audio_tags ]
+
+task :copy_source do
+  source.duplicate 'index.html'
+end
+
+task :insert_audio_tags do
+  tags = sounds.map {|s| 
+    "<audio id=#{s.name} title=#{s.name} src=#{s.name} autobuffer></audio>"
+  }
+  out.replace_contents!('<!-- audio goes here -->', tags.join("\n"))
+end
+
+
+
+  
