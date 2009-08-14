@@ -5,43 +5,38 @@
  * Original drum kit samples freely used from http://bigsamples.free.fr/
  */
 
-// ===== VARIABLES =====
 var isPlaying = false;
-var curBeat = 0;
-var curTempo = 120;
-
-// ===== FUNCTIONS =====
-// playBeat: Play the next beat!
+var beat = 0;
+var tempo = 120;
 
 var $pips = $("#tracker .pip"),
 	$first_pip = $pips.get(0);
 
 function playBeat() {
+	beat = (beat + 1) % 16;
+
+	$pips.filter(".active").
+		removeClass("active").
+		next().
+			add($first_pip). 	// handle when on last pip 
+			eq(0).				// so eq(0) == first pip
+				addClass('active');
+			
+	// Find each active beat, play it
+	var tmpAudio;
+	var column = $(".soundrow[id^=control] li.pip:nth-child("+(beat+1).toString()+")");
 	
-	if (isPlaying !== false) {
-		curBeat = (curBeat + 1) % 16;
-
-		$pips.filter(".active").
-			removeClass("active").
-			next().
-				add($first_pip). 	// handle when on last pip 
-				eq(0).				// so eq(0) == first pip
-					addClass('active');
-
-				
-		// Find each active beat, play it
-		var tmpAudio;
-		$(".soundrow[id^=control] li.pip.active.col_" + curBeat).each(function(i){
-			tmpAudio = document.getElementById($(this).data('sound_id'));
-			if (!tmpAudio.paused) {
-				// Pause and reset it
-				tmpAudio.pause();
-				tmpAudio.currentTime = 0.0;
-			}
-			tmpAudio.play();
-		});
-	} // if (isPlaying)
-} // playBeat
+	column.filter('.active')
+	.each(function(i){
+		tmpAudio = document.getElementById($(this).data('sound_id'));
+		if (!tmpAudio.paused) {
+			// Pause and reset it
+			tmpAudio.pause();
+			tmpAudio.currentTime = 0.0;
+		}
+		tmpAudio.play();
+	});
+}
 
 // Make a new hash
 function buildHash() {
@@ -76,7 +71,7 @@ function parseHash() {
 		if (typeof pieces[1] !== 'undefined') {
 			$('#temposlider').slider('value', parseInt(pieces[1]));
 			$('#tempovalue').innerHTML = pieces[1];
-			curTempo = parseInt(pieces[1]);
+			tempo = parseInt(pieces[1]);
 		}
 	}
 } // parseHash
@@ -115,8 +110,8 @@ $(document).ready(function(){
 	$("#soundstart").click(function(){
 		if (isPlaying === false) {
 			// Start the playing!
-			curBeat = 0;
-			isPlaying = setInterval(playBeat, 60000 / curTempo / 4);
+			beat = 0;
+			isPlaying = setInterval(playBeat, 60000 / tempo / 4);
 			// Change our display
 			this.innerHTML = "Stop!";
 		} else {
@@ -144,19 +139,19 @@ $(document).ready(function(){
 	}
 
 	// Show our value, now that we've built off of the hash
-	$('#tempovalue').html(curTempo);
+	$('#tempovalue').html(tempo);
 	// Make our tempo slider
 	$('#temposlider').slider({
-		'value': curTempo,
+		'value': tempo,
 		'min': 30,
 		'max': 180,
 		'step': 10,
 		'slide': function(e, ui) {
-			curTempo = ui.value;
-			$('#tempovalue').html(curTempo);
+			tempo = ui.value;
+			$('#tempovalue').html(tempo);
 			if (isPlaying !== false) {
 				clearInterval(isPlaying);
-				isPlaying = setInterval(playBeat, 60000 / curTempo / 4);
+				isPlaying = setInterval(playBeat, 60000 / tempo / 4);
 			}
 		},
 		'stop': function(e, ui) {
