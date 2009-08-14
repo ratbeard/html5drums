@@ -12,13 +12,23 @@ var curTempo = 120;
 
 // ===== FUNCTIONS =====
 // playBeat: Play the next beat!
+
+var $pips = $("#tracker .pip"),
+	$first_pip = $pips.get(0);
+
 function playBeat() {
+	
 	if (isPlaying !== false) {
-		var nextBeat = 60000 / curTempo / 4;
-		// Turn off all lights on the tracker's row
-		$("#tracker li.pip").removeClass("active");
-		// Light up the tracker on the current pip
-		$("#tracker li.pip.col_" + curBeat).addClass("active");
+		curBeat = (curBeat + 1) % 16;
+
+		$pips.filter(".active").
+			removeClass("active").
+			next().
+				add($first_pip). 	// handle when on last pip 
+				eq(0).				// so eq(0) == first pip
+					addClass('active');
+
+				
 		// Find each active beat, play it
 		var tmpAudio;
 		$(".soundrow[id^=control] li.pip.active.col_" + curBeat).each(function(i){
@@ -30,26 +40,22 @@ function playBeat() {
 			}
 			tmpAudio.play();
 		});
-		// Move the pip forward
-		curBeat = (curBeat + 1) % 16;
 	} // if (isPlaying)
 } // playBeat
 
 // Make a new hash
 function buildHash() {
-	// Start it
-	var newhash = '';
-	// For each pip, check and add in a 0/1 as appropriate
-	$(".soundrow[id^=control] li.pip").each(function(i){
-		newhash += $(this).is('.active') ? '1' : '0';
-	});
-	// Separate it
-	newhash += '|';
-	// Now, toss in the beat
-	newhash += $('#temposlider').slider('value');
-	// Check and see if we really need to update
-	if (location.hash != '#' + newhash) location.hash = newhash;
-} // buildHash
+	var newhash =
+	$(".soundrow[id^=control] li.pip").map(function () {
+		return $(this).is('.active') ? 1 : 0;
+	}).
+	get().
+	concat('|', $('#temposlider').slider('value')).
+	join('');
+
+	if (location.hash != '#' + newhash) 
+		location.hash = newhash;
+} 
 
 // Read in our hash
 function parseHash() {
