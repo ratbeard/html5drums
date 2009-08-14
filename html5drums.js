@@ -4,9 +4,10 @@
  * Software licensed under MIT license, see http://www.randomthink.net/lab/LICENSE
  * Original drum kit samples freely used from http://bigsamples.free.fr/
  */
-
 $(document).ready(function(){
-	make_playlist();
+	$.drumz.tracker._init();
+	$.drumz.sounds._init();
+	// $.drumz.controls._init();
 	bind_buttons();
 	parse_location_hash();
 	init_state();
@@ -15,30 +16,6 @@ $(document).ready(function(){
 	function parse_location_hash() {
 		if (location.hash.length > 0)
 			$.drumz.deserialize(location.hash.substring(1));
-	}
-	function make_playlist() {
-		// Process each of the audio items, creating a playlist sort of setup
-		$("audio").each(function(i){
-			var self = this;
-
-			// Make a sub-list for our control
-			var $ul = $('<ul id="control_' + this.id + '" class="soundrow">');
-			$ul.append('<li class="header">' + this.title + '</li>');
-
-
-			for (j = 0; j < 16; j++) {
-				var $li =
-					$('<li class="pip col_'+j+'">'+self.id+'</li>')
-					.click(function(){
-						$(this).toggleClass('active');
-						buildHash();
-					})
-					.data('sound_id', self.id);
-				$ul.append($li);
-			}
-			// Append it up
-			$('<li>').append($ul).appendTo('#lights');
-		});
 	}
 	function bind_buttons() {
 		$("#soundstart").toggle($.drumz.start, $.drumz.stop);
@@ -69,8 +46,8 @@ $(document).ready(function(){
 		},
 		start: function () {
 			var time = 60000 / $.drumz.tempo / 4;
-			$.drumz.loop = setInterval($.drumz.play, time);
 			$.drumz.playing = true;
+			$.drumz.loop = setInterval($.drumz._play, time);
 		},
 		stop: function () {
 			$.drumz.playing = false;
@@ -90,20 +67,13 @@ $(document).ready(function(){
 				}				
 			}
 		},
-		play: function () {
+		_play: function () {
+			// debugger
 			var beat = $.drumz.tracker.activate_next();
-			// Find each active beat, play it
-			var audio;
 			var column = $(".soundrow[id^=control] li.pip:nth-child("+(beat+1).toString()+")");
 
 			column.active().each(function (){
-				audio = document.getElementById($(this).data('sound_id'));
-				if (!audio.paused) {
-					// Pause and reset it
-					audio.pause();
-					audio.currentTime = 0.0;
-				}
-				audio.play();
+				$.drumz.sounds.play( $(this).data('sound') );
 			});
 		},
 		serialize: function () {
@@ -129,9 +99,20 @@ $(document).ready(function(){
 				$('#temposlider').slider('value', tempo);
 			}	
 		},
+		
+		_make_pips: function () {
+			return $(
+				$.map(new Array($.drumz.beats), function (nil, i) {
+					return $('<li class="pip col_'+ i +'">tracker_'+i+'</li>')[0];
+				})
+			);
+		},
 
 		// § Components that make up the drumz §
 		tracker: {
+			_init: function () {
+				this.pips = $.drumz._make_pips().appendTo("#tracker");
+			},
 			pips: $("#tracker .pip"),
 			// deactivates the current pip and activates the next pip
 			// starts at pip 0, wraps around to pip 0
@@ -144,7 +125,33 @@ $(document).ready(function(){
 			},
 		}, 
 		sounds: {
-			
+			get: function (id) {
+				return $('audio[title="'+id+'"]')[0];
+			},
+			play: function (id) {
+				var audio = this.get(id)
+				if ( !audio.paused ) {
+					audio.pause();
+					audio.currentTime = 0.0;
+				}
+				audio.play();
+			},
+			_init: function () {
+				$("audio").each(function(i){
+					var $ul = $('<ul id="control_' + this.id + '" class="soundrow">');
+					$ul.append('<li class="header">' + this.title + '</li>');
+
+					$.drumz._make_pips().
+						data('sound', this.title).
+						click(function(){
+							$(this).toggleClass('active');
+							buildHash();
+						}).
+						appendTo($ul);
+
+					$('#lights').append($('<li>').append($ul));
+				});
+			},
 		},
 		notes: {
 			clear: function () {
@@ -169,7 +176,6 @@ $(document).ready(function(){
 		},
 	})
 })(jQuery);
-
 
 // Make a new hash
 function buildHash() {

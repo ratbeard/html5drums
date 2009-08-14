@@ -1,13 +1,13 @@
 require 'rush'
 
-source = Rush.launch_dir['source.html']
-out = Rush.launch_dir['index.html']
-sounds = Rush.launch_dir['sounds/*.wav']
+source  = Rush.launch_dir['source.html']
+out     = Rush.launch_dir['index.html']
+sounds  = Rush.launch_dir['sounds/*.wav']
 
-task :default => :compile
   
 desc "Copy in sounds file paths as <audio> tags"
 task :compile => [:copy_source, :insert_audio_tags ]
+task :default => :compile
 
 desc "make a copy of our page template"
 task :copy_source do
@@ -19,7 +19,7 @@ task :insert_audio_tags do
   tags = sounds.map {|s| 
     path = "sounds/#{s.name}"
     name = s.name.split('.')[0]
-    "<audio id='#{name}' title='#{name}' src='#{path}' autobuffer />"
+    "<audio title='#{name}' src='#{path}' autobuffer></audio>"
   }
   out.replace_contents!('<!-- audio goes here -->', tags.join("\n"))
 end
