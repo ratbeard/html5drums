@@ -112,24 +112,20 @@ $(document).ready(function(){
 			join('');
 		},
 		deserialize: function (str) {
-			// Split it up, work it out, removing the actual hashmark
-			var pieces = str.split('|');
-			// Set the lights
-			var lights = pieces[0];
+			var notes = str.split('|')[0],
+				tempo = str.split('|')[1];
+				tempo = parseInt(tempo);
+					
 			$(".soundrow[id^=control] li.pip").each(function(i){
-				// Make sure we haven't exceeded
-				if (i >= lights.length) 
-					return false;
-				if (lights.charAt(i) == '1')
-					$(this).addClass('active');
+				if ( i < notes.length && notes.charAt(i) == '1') 
+					$(this).activate();
 			});
-			// Set the tempo
-			if (typeof pieces[1] !== 'undefined') {
-				$('#temposlider').slider('value', parseInt(pieces[1]));
-				$('#tempovalue').innerHTML = pieces[1];
-				$.drumz.tempo = parseInt(pieces[1]);
-			}
 			
+			if ( tempo ) {
+				$('#tempovalue').innerHTML = tempo;
+				$.drumz.tempo = tempo;
+				$('#temposlider').slider('value', tempo);
+			}	
 		},
 
 		// § Components that make up the drumz §
