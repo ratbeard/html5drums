@@ -67,8 +67,9 @@ $(document).ready(function(){
 			beats: 16
 		},
 		start: function () {
+			var time = 60000 / $.drumz.tempo / 4;
+			$.drumz.loop = setInterval($.drumz.play, time);
 			$.drumz.playing = true;
-			$.drumz.loop = setInterval($.drumz.play, 60000 / $.drumz.tempo / 4);
 		},
 		stop: function () {
 			$.drumz.playing = false;
