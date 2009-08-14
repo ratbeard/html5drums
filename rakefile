@@ -3,7 +3,7 @@ require 'rush'
 
 source = Rush.launch_dir['source.html']
 out = Rush.launch_dir['index.html']
-sounds = Rush.launch_dirp['drumkit/*.wav']
+sounds = Rush.launch_dir['drumkit/*.wav']
 
   
 desc "Copy in sounds file paths as <audio> tags"
@@ -15,7 +15,7 @@ end
 
 task :insert_audio_tags do
   tags = sounds.map {|s| 
-    "<audio id=#{s.name} title=#{s.name} src=#{s.name} autobuffer></audio>"
+    "<audio id='#{s.name}' title='#{s.name}' src='#{s}' autobuffer />"
   }
   out.replace_contents!('<!-- audio goes here -->', tags.join("\n"))
 end
