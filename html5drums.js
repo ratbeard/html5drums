@@ -50,12 +50,8 @@ $(document).ready(function(){
 			'max': 180,
 			'step': 10,
 			'slide': function(e, ui) {
-				$.drumz.tempo = ui.value;
-				$('#tempovalue').html($.drumz.tempo);
-				if ( $.drumz.playing ) {
-					clearInterval($.drumz.playing);
-					$.drumz.playing = setInterval(playBeat, 60000 / $.drumz.tempo / 4);
-				}
+				$('#tempovalue').html(ui.value);
+				$.drumz.change({tempo: ui.value});
 			},
 			'stop': function(e, ui) {
 				buildHash();
@@ -90,16 +86,26 @@ $(document).ready(function(){
 			beats: 16
 		},
 		start: function () {
-			$.drumz.playing = setInterval(playBeat, 60000 / $.drumz.tempo / 4);
+			$.drumz.playing = true;
+			$.drumz.loop = setInterval(playBeat, 60000 / $.drumz.tempo / 4);
 		},
 		stop: function () {
-			clearInterval($.drumz.playing);
 			$.drumz.playing = false;
+			clearInterval($.drumz.loop);
 			$("#tracker li.pip").removeClass("active");
 			$("audio").each(function(){
 				this.pause();
 				this.currentTime = 0.0;
 			});
+		},
+		change: function (config) {
+			if ('tempo' in config) {
+				$.drumz.tempo = config.tempo;
+				if ( $.drumz.playing ) {
+					$.drumz.stop(); 
+					$.drumz.start(); 
+				}				
+			}
 		},
 		tracker: tracker, 
 		sounds: sounds
