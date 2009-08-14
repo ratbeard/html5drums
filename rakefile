@@ -2,7 +2,7 @@ require 'rush'
 
 source = Rush.launch_dir['source.html']
 out = Rush.launch_dir['index.html']
-sounds = Rush.launch_dir['drumkit/*.wav']
+sounds = Rush.launch_dir['sounds/*.wav']
 
 task :default => :compile
   
@@ -17,11 +17,9 @@ end
 desc "insert audo tags into template copy"
 task :insert_audio_tags do
   tags = sounds.map {|s| 
-    "<audio id='#{s.name}' title='#{s.name}' src='#{s}' autobuffer />"
+    path = "sounds/#{s.name}"
+    name = s.name.split('.')[0]
+    "<audio id='#{name}' title='#{name}' src='#{path}' autobuffer />"
   }
   out.replace_contents!('<!-- audio goes here -->', tags.join("\n"))
 end
-
-
-
-  

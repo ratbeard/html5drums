@@ -24,7 +24,8 @@ $(document).ready(function(){
 			// Make a sub-list for our control
 			var $ul = $('<ul id="control_' + this.id + '" class="soundrow">');
 			$ul.append('<li class="header">' + this.title + '</li>');
-			// Add 16 list items!
+
+
 			for (j = 0; j < 16; j++) {
 				var $li =
 					$('<li class="pip col_'+j+'">'+self.id+'</li>')
