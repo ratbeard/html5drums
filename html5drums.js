@@ -7,7 +7,6 @@
 $(document).ready(function(){
 	$.drumz.tracker._init();
 	$.drumz.sounds._init();
-	// $.drumz.controls._init();
 	bind_buttons();
 	parse_location_hash();
 	init_state();
@@ -45,14 +44,16 @@ $(document).ready(function(){
 			beats: 16
 		},
 		start: function () {
+			$.drumz.tracker._load_columns();
 			var time = 60000 / $.drumz.tempo / 4;
+			//
 			$.drumz.playing = true;
 			$.drumz.loop = setInterval($.drumz._play, time);
 		},
 		stop: function () {
 			$.drumz.playing = false;
 			clearInterval($.drumz.loop);
-			$("#tracker li.pip").removeClass("active");
+			$("#tracker li.pip").deactivate();
 			$("audio").each(function(){
 				this.pause();
 				this.currentTime = 0.0;
@@ -68,28 +69,27 @@ $(document).ready(function(){
 			}
 		},
 		_play: function () {
-			// debugger
-			var beat = $.drumz.tracker.activate_next();
-			var column = $(".soundrow[id^=control] li.pip:nth-child("+(beat+2).toString()+")");
-
-			column.active().each(function (){
-				$.drumz.sounds.play( $(this).data('sound') );
-			});
+			var beat = $.drumz.tracker.activate_next(),
+				column = $.drumz.tracker.columns[beat],
+				sounds = column.active().map(function () { 
+							return $(this).data('sound');
+						}).get();
+			sounds.forEach($.drumz.sounds.play);
 		},
 		serialize: function () {
 			return $(".soundrow[id^=control] li.pip").map(function () {
-				return $(this).active().length;
-			}).get().
-			concat('|', $.drumz.tempo).
-			join('');
+					return $(this).active().length;
+				}).get().
+				concat('|', $.drumz.tempo).
+				join('');
 		},
 		deserialize: function (str) {
-			var notes = str.split('|')[0],
-				tempo = str.split('|')[1];
-				tempo = parseInt(tempo);
-					
+			var parts = str.split('|'), 
+				notes = parts[0],					
+				tempo = parseInt(parts[1]);
+				
 			$(".soundrow[id^=control] li.pip").each(function(i){
-				if ( i < notes.length && notes.charAt(i) == '1') 
+				if ( i < notes.length && notes[i] == '1') 
 					$(this).activate();
 			});
 			
@@ -100,39 +100,65 @@ $(document).ready(function(){
 			}	
 		},
 		
-		_make_pips: function (opts) {
-			return $($.map(new Array($.drumz.beats), 
-				function (nil, i) {
-					return $('<li class="pip"></li>')[0];
-				}));
+		// make an array of length == number of beats
+		// pass in fn to build each element.  fn is passed beat index
+		_map_beats: function (fn) {
+			return $.map(new Array($.drumz.beats), function (nil, i) {
+				return fn(i);
+			});
+		},
+		
+		_make_pips: function () {
+			var items = $.drumz._map_beats(li);
+			return $(items.join(''));
+			/////
+			function li () { return '<li class="pip"></li>'; }
+		},
+		
+		// make pips, append to given spot, and space out every 4 pips
+		// returns pips
+		_append_pips: function (appendTo) {
+			return $.drumz._make_pips().
+						appendTo(appendTo).
+						filter(':nth-child(4n+1)').
+							addClass('space').
+						end();
 		},
 
 		// § Components that make up the drumz §
 		tracker: {
 			_init: function () {
-				this.pips = $.drumz._make_pips().
-					appendTo("#tracker").
-					filter(':nth-child(4n+1)').
-						addClass('space').
-					end();
+				this.pips = $.drumz._append_pips('#tracker');				
 			},
-			pips: $("#tracker .pip"),
+			
+			_load_columns: function () {
+				this.columns = $.drumz._map_beats(function (i) {
+					var sel = ".soundrow[id^=control] li.pip:nth-child("+(i+2).toString()+")";
+					var el = $(sel);
+					// console.log(sel, el)
+					return el;
+				});
+			},
+			
 			// deactivates the current pip and activates the next pip
 			// starts at pip 0, wraps around to pip 0
 			// returns the index of the newly activated pip
 			activate_next: function () {
-				var pips = this.pips;
-				return pips.index(
-					$(pips.active().deactivate().next()[0] || pips[0]).activate()
+				var p = this.pips;
+				return p.index(
+					$(p.active().deactivate().next()[0] || p[0]).activate()
 				);
 			},
+			
 		}, 
 		sounds: {
 			get: function (id) {
 				return $('audio[title="'+id+'"]')[0];
 			},
 			play: function (id) {
-				var audio = this.get(id)
+				console.log('adsf')
+				var audio = $.drumz.sounds.get(id);
+				console.log('audio>', audio)
 				if ( !audio.paused ) {
 					audio.pause();
 					audio.currentTime = 0.0;
@@ -144,16 +170,12 @@ $(document).ready(function(){
 					var $ul = $('<ul id="control_' + this.id + '" class="soundrow">');
 					$ul.append('<li class="header">' + this.title + '</li>');
 
-					$.drumz._make_pips().
+					$.drumz._append_pips($ul).
 						data('sound', this.title).
 						click(function(){
 							$(this).toggleClass('active');
 							buildHash();
-						}).
-						appendTo($ul).
-						filter(':nth-child(4n+1)').
-							addClass('space');
-						
+						});
 
 					$('#lights').append($('<li>').append($ul));
 				});
@@ -169,7 +191,7 @@ $(document).ready(function(){
 	// apply defaults
 	$.extend($.drumz, $.drumz.defaults);
 	
-	// add element helper methods
+	// add element helper methods.  is this bad form??
 	$.fn.extend({
 		active: function () {
 			return this.filter('.active');
