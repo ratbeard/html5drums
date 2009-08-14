@@ -36,42 +36,25 @@ $(document).ready(function(){
 		});
 	}
 	function bind_buttons() {
-		// Bind up a click for our button
-		$("#soundstart").click(function(){
-			if (isPlaying === false) {
-				// Start the playing!
-				isPlaying = setInterval(playBeat, 60000 / tempo / 4);
-				// Change our display
-				this.innerHTML = "Stop!";
-			} else {
-				clearInterval(isPlaying);
-				isPlaying = false;
-				$("#tracker li.pip").removeClass("active");
-				$("audio").each(function(){
-					this.pause();
-					this.currentTime = 0.0;
-				});
-				this.innerHTML = "Start!";
-			}
-		});
+		$("#soundstart").toggle($.drumz.start, $.drumz.stop);
 		$('#clearall').click(clearAll);
 		$('#reload').click(parseHash);
 	}
 	function init_state () {
 		parseHash();
-		$('#tempovalue').html(tempo);
+		$('#tempovalue').html($.drumz.tempo);
 
 		$('#temposlider').slider({
-			'value': tempo,
+			'value': $.drumz.tempo,
 			'min': 30,
 			'max': 180,
 			'step': 10,
 			'slide': function(e, ui) {
-				tempo = ui.value;
-				$('#tempovalue').html(tempo);
-				if (isPlaying !== false) {
-					clearInterval(isPlaying);
-					isPlaying = setInterval(playBeat, 60000 / tempo / 4);
+				$.drumz.tempo = ui.value;
+				$('#tempovalue').html($.drumz.tempo);
+				if ( $.drumz.playing ) {
+					clearInterval($.drumz.playing);
+					$.drumz.playing = setInterval(playBeat, 60000 / $.drumz.tempo / 4);
 				}
 			},
 			'stop': function(e, ui) {
@@ -80,10 +63,6 @@ $(document).ready(function(){
 		});
 	}
 });
-
-
-var isPlaying = false;
-var tempo = 120;
 
 (function ($) {
 	var tracker = {
@@ -104,7 +83,29 @@ var tempo = 120;
 		
 	};
 	// extend jQuery
-	$.extend({drumz: {tracker: tracker, sounds: sounds}});
+	$.extend({drumz: {
+		defaults: {
+			playing: false,
+			tempo: 120,
+			beats: 16
+		},
+		start: function () {
+			$.drumz.playing = setInterval(playBeat, 60000 / $.drumz.tempo / 4);
+		},
+		stop: function () {
+			clearInterval($.drumz.playing);
+			$.drumz.playing = false;
+			$("#tracker li.pip").removeClass("active");
+			$("audio").each(function(){
+				this.pause();
+				this.currentTime = 0.0;
+			});
+		},
+		tracker: tracker, 
+		sounds: sounds
+	}});
+	
+	$.extend($.drumz, $.drumz.defaults);
 	
 	$.fn.extend({
 		active: function () {
@@ -121,7 +122,6 @@ var tempo = 120;
 
 function playBeat() {	
 	var beat = $.drumz.tracker.activate_next();
-	
 	// Find each active beat, play it
 	var audio;
 	var column = $(".soundrow[id^=control] li.pip:nth-child("+(beat+1).toString()+")");
@@ -144,7 +144,7 @@ function buildHash() {
 	$(".soundrow[id^=control] li.pip").map(function () {
 		return $(this).active().length;
 	}).get().
-	concat('|', $('#temposlider').slider('value')).
+	concat('|', $.drumz.tempo).
 	join('');
 	location.hash = newhash;
 } 
@@ -168,7 +168,7 @@ function parseHash() {
 		if (typeof pieces[1] !== 'undefined') {
 			$('#temposlider').slider('value', parseInt(pieces[1]));
 			$('#tempovalue').innerHTML = pieces[1];
-			tempo = parseInt(pieces[1]);
+			$.drumz.tempo = parseInt(pieces[1]);
 		}
 	}
 }
