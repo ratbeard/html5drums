@@ -9,25 +9,48 @@ var isPlaying = false;
 var beat = 0;
 var tempo = 120;
 
-var $pips = $("#tracker .pip"),
-	$first_pip = $pips.get(0);
+(function ($) {
+	var tracker = {
+		pips: $("#tracker .pip"),
+		activate_next: function () {
+			$(this.pips.active().deactivate().next()[0] || this.pips[0]
+			).activate();
+		}
+		
+	};
+	
+	var sounds = {
+		
+	};
+	// extend jQuery
+	$.extend({drumz: {tracker: tracker, sounds: sounds}});
+	
+	$.fn.extend({
+		active: function () {
+			return this.filter('.active');
+		},
+		activate: function () {
+			return this.addClass('active');
+		},
+		deactivate: function () {
+			return this.removeClass('active');
+		},
+	})
+})(jQuery);
+
+
+// console.log($().beep())
 
 function playBeat() {
 	beat = (beat + 1) % 16;
-
-	$pips.filter(".active").
-		removeClass("active").
-		next().
-			add($first_pip). 	// handle when on last pip 
-			eq(0).				// so eq(0) == first pip
-				addClass('active');
+	
+	$.drumz.tracker.activate_next();
 			
 	// Find each active beat, play it
 	var tmpAudio;
 	var column = $(".soundrow[id^=control] li.pip:nth-child("+(beat+1).toString()+")");
 	
-	column.filter('.active')
-	.each(function(i){
+	column.filter('.active').each(function(i){
 		tmpAudio = document.getElementById($(this).data('sound_id'));
 		if (!tmpAudio.paused) {
 			// Pause and reset it
