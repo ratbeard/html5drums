@@ -12,9 +12,15 @@ var tempo = 120;
 (function ($) {
 	var tracker = {
 		pips: $("#tracker .pip"),
+
+		// deactivates the current pip and activates the next pip
+		// starts at pip 0 and wraps around to pip 0
+		// return the index of the now activated pip, initiall will be 0
 		activate_next: function () {
-			$(this.pips.active().deactivate().next()[0] || this.pips[0]
-			).activate();
+			var pips = this.pips;
+			return pips.index(
+				$(pips.active().deactivate().next()[0] || pips[0]).activate()
+			);
 		}
 		
 	};
@@ -41,11 +47,9 @@ var tempo = 120;
 
 // console.log($().beep())
 
-function playBeat() {
-	beat = (beat + 1) % 16;
+function playBeat() {	
+	beat = $.drumz.tracker.activate_next();
 	
-	$.drumz.tracker.activate_next();
-			
 	// Find each active beat, play it
 	var tmpAudio;
 	var column = $(".soundrow[id^=control] li.pip:nth-child("+(beat+1).toString()+")");
@@ -59,6 +63,7 @@ function playBeat() {
 		}
 		tmpAudio.play();
 	});
+
 }
 
 // Make a new hash
