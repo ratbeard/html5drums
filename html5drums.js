@@ -15,14 +15,13 @@ var tempo = 120;
 
 		// deactivates the current pip and activates the next pip
 		// starts at pip 0 and wraps around to pip 0
-		// return the index of the now activated pip, initiall will be 0
+		// returns the index of the newly activated pip
 		activate_next: function () {
 			var pips = this.pips;
 			return pips.index(
 				$(pips.active().deactivate().next()[0] || pips[0]).activate()
 			);
 		}
-		
 	};
 	
 	var sounds = {
@@ -44,24 +43,21 @@ var tempo = 120;
 	})
 })(jQuery);
 
-
-// console.log($().beep())
-
 function playBeat() {	
 	beat = $.drumz.tracker.activate_next();
 	
 	// Find each active beat, play it
-	var tmpAudio;
+	var audio;
 	var column = $(".soundrow[id^=control] li.pip:nth-child("+(beat+1).toString()+")");
 	
-	column.filter('.active').each(function(i){
-		tmpAudio = document.getElementById($(this).data('sound_id'));
-		if (!tmpAudio.paused) {
+	column.active().each(function (){
+		audio = document.getElementById($(this).data('sound_id'));
+		if (!audio.paused) {
 			// Pause and reset it
-			tmpAudio.pause();
-			tmpAudio.currentTime = 0.0;
+			audio.pause();
+			audio.currentTime = 0.0;
 		}
-		tmpAudio.play();
+		audio.play();
 	});
 
 }
@@ -70,9 +66,8 @@ function playBeat() {
 function buildHash() {
 	var newhash =
 	$(".soundrow[id^=control] li.pip").map(function () {
-		return $(this).is('.active') ? 1 : 0;
-	}).
-	get().
+		return $(this).active().length;
+	}).get().
 	concat('|', $('#temposlider').slider('value')).
 	join('');
 
@@ -102,11 +97,11 @@ function parseHash() {
 			tempo = parseInt(pieces[1]);
 		}
 	}
-} // parseHash
+}
 
 // Clear it!
 function clearAll() {
-	$(".soundrow[id^=control] li.active").removeClass('active');
+	$(".soundrow[id^=control] li.active").deactivate();
 }
 
 // Run on DOM ready
@@ -129,7 +124,7 @@ $(document).ready(function(){
 				})
 				.data('sound_id', self.id);
 			$ul.append($li);
-		} // for (i = 0; i < 16; i++)
+		}
 		// Append it up
 		$('<li>').append($ul).appendTo('#lights');
 	});
@@ -157,18 +152,11 @@ $(document).ready(function(){
 	$('#clearall').click(clearAll);
 	$('#reload').click(parseHash);
 
-	// ===== Misc =====
-	// Build or read the hash
-	if (location.hash == '') {
-		// I was building this at load - but now, no, just to be safe
-		//buildHash();
-	} else {
+	if (location.hash !== '')
 		parseHash();
-	}
 
-	// Show our value, now that we've built off of the hash
 	$('#tempovalue').html(tempo);
-	// Make our tempo slider
+	
 	$('#temposlider').slider({
 		'value': tempo,
 		'min': 30,
