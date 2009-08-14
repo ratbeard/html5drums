@@ -71,10 +71,8 @@ ul.soundrow li.active {
 	background-color: #CC0;
 }
 
-ul.soundrow li.col_3,
-ul.soundrow li.col_7,
-ul.soundrow li.col_11 {
-	margin-right: 15px;
+.space {
+	margin-right: 15px !important;
 }
 
 #tracker li.active {

@@ -70,7 +70,7 @@ $(document).ready(function(){
 		_play: function () {
 			// debugger
 			var beat = $.drumz.tracker.activate_next();
-			var column = $(".soundrow[id^=control] li.pip:nth-child("+(beat+1).toString()+")");
+			var column = $(".soundrow[id^=control] li.pip:nth-child("+(beat+2).toString()+")");
 
 			column.active().each(function (){
 				$.drumz.sounds.play( $(this).data('sound') );
@@ -100,18 +100,21 @@ $(document).ready(function(){
 			}	
 		},
 		
-		_make_pips: function () {
-			return $(
-				$.map(new Array($.drumz.beats), function (nil, i) {
-					return $('<li class="pip col_'+ i +'">tracker_'+i+'</li>')[0];
-				})
-			);
+		_make_pips: function (opts) {
+			return $($.map(new Array($.drumz.beats), 
+				function (nil, i) {
+					return $('<li class="pip"></li>')[0];
+				}));
 		},
 
 		// § Components that make up the drumz §
 		tracker: {
 			_init: function () {
-				this.pips = $.drumz._make_pips().appendTo("#tracker");
+				this.pips = $.drumz._make_pips().
+					appendTo("#tracker").
+					filter(':nth-child(4n+1)').
+						addClass('space').
+					end();
 			},
 			pips: $("#tracker .pip"),
 			// deactivates the current pip and activates the next pip
@@ -147,7 +150,10 @@ $(document).ready(function(){
 							$(this).toggleClass('active');
 							buildHash();
 						}).
-						appendTo($ul);
+						appendTo($ul).
+						filter(':nth-child(4n+1)').
+							addClass('space');
+						
 
 					$('#lights').append($('<li>').append($ul));
 				});
