@@ -4,8 +4,8 @@ Testing the readme
 Thanks
 ======
 
-1. Brian Arnold - original idea and coded it up!
-2. God - for watching over me when I sleep at night, and for giving me string (in my arms!)
+1. _Brian Arnold_ - original idea and coded it up!
+2. _God_ - for giving me strength (in my arms!)
 
 License
 =======
