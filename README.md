@@ -1,13 +1,12 @@
-> **A drum tracker**
-> _...in your browser?!?_
+A Drum Tracker..._in your browser?!??_
 
-**YES**
+> **YES**
 
-Courtesy of jquery, jqueryUI, the html5 `<audio>` tag, and browsers that implement it.  That would be:
+Courtesy of **jquery**, jqueryUI, the **html5** `<audio>` tag, and **browsers** that implement it.  That be at least versions:
 
-- Safari >= 4
-- Firefox >= 3.5
-- Chrome >= nightly (???)
+- Safari 4
+- Firefox 3.5
+- Chrome nightly (???)
 - Opera ???
 - Internet Explorer - not known :(
 
@@ -24,7 +23,7 @@ Thanks
 1. _Brian Arnold_ - original idea and implementer
 2. Browsers for implementing `<audio>`
 3. jquery and jqueryUI developers
-. _God_ - for giving me strength (in my arms!)
+4. _God_ - for giving me strength (in my arms!)
 
 License
 =======
