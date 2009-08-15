@@ -19,7 +19,7 @@ More about the current audio capabilities of browsers:
 Install
 =======
 
-    git clone git@github.com:ratbeard/html5drums.git
+    git clone git://github.com/ratbeard/html5drums.git
     cd html5drums
     open index.html  # on 
 
