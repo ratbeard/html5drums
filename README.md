@@ -1,8 +1,9 @@
-A drum tracker... in your browser?!?
+> **A drum tracker**
+> _...in your browser?!?_
 
-**YES!**
+**YES**
 
-Courtesy of jquery, the html5 `<audio>` tag, and browsers that implement it.  That would be:
+Courtesy of jquery, jqueryUI, the html5 `<audio>` tag, and browsers that implement it.  That would be:
 
 - Safari >= 4
 - Firefox >= 3.5
@@ -12,17 +13,18 @@ Courtesy of jquery, the html5 `<audio>` tag, and browsers that implement it.  Th
 
 Install
 =======
-Trust me:
 
     git clone git@github.com:ratbeard/html5drums.git
     cd html5drums
-    open index.html  # on mac!
+    open index.html  # on 
 
 Thanks
 ======
 
-1. _Brian Arnold_ - original idea and coded it up!
-2. _God_ - for giving me strength (in my arms!)
+1. _Brian Arnold_ - original idea and implementer
+2. Browsers for implementing `<audio>`
+3. jquery and jqueryUI developers
+. _God_ - for giving me strength (in my arms!)
 
 License
 =======
