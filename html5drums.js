@@ -156,9 +156,7 @@ $(document).ready(function(){
 				return $('audio[title="'+id+'"]')[0];
 			},
 			play: function (id) {
-				console.log('adsf')
 				var audio = $.drumz.sounds.get(id);
-				console.log('audio>', audio)
 				if ( !audio.paused ) {
 					audio.pause();
 					audio.currentTime = 0.0;
