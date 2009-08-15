@@ -5,8 +5,8 @@
  * Original drum kit samples freely used from http://bigsamples.free.fr/
  */
 $(document).ready(function(){
-	$.drumz.tracker._init();
-	$.drumz.sounds._init();
+	$.drum.tracker._init();
+	$.drum.sounds._init();
 	bind_buttons();
 	parse_location_hash();
 	init_state();
@@ -14,45 +14,45 @@ $(document).ready(function(){
 	/////
 	function parse_location_hash() {
 		if (location.hash.length > 0)
-			$.drumz.deserialize(location.hash.substring(1));
+			$.drum.deserialize(location.hash.substring(1));
 	}
 	function bind_buttons() {
-		$("#soundstart").toggle($.drumz.start, $.drumz.stop);
-		$('#clearall').click($.drumz.notes.clear);
+		$("#soundstart").toggle($.drum.start, $.drum.stop);
+		$('#clearall').click($.drum.notes.clear);
 		$('#reload').click(parse_location_hash);
 	}
 	function init_state () {		
-		$('#tempovalue').html($.drumz.tempo);
+		$('#tempovalue').html($.drum.tempo);
 		$('#temposlider').slider({
 			'min': 30, 'max': 180, 'step': 10, 
-			'value': $.drumz.tempo,
+			'value': $.drum.tempo,
 			'slide': function(e, ui) {
 				$('#tempovalue').html(ui.value);
-				$.drumz.change({tempo: ui.value});
+				$.drum.change({tempo: ui.value});
 			},
 			'stop': buildHash
 		});
 	}
 });
 
-// extend jQuery with drumz plugin
+// extend jQuery with drum plugin
 (function ($) {
-	$.extend({drumz: {
+	$.extend({drum: {
 		defaults: {
 			playing: false,
 			tempo: 120,
 			beats: 16
 		},
 		start: function () {
-			$.drumz.tracker._load_columns();
-			var time = 60000 / $.drumz.tempo / 4;
+			$.drum.tracker._load_columns();
+			var time = 60000 / $.drum.tempo / 4;
 			//
-			$.drumz.playing = true;
-			$.drumz.loop = setInterval($.drumz._play, time);
+			$.drum.playing = true;
+			$.drum.loop = setInterval($.drum._play, time);
 		},
 		stop: function () {
-			$.drumz.playing = false;
-			clearInterval($.drumz.loop);
+			$.drum.playing = false;
+			clearInterval($.drum.loop);
 			$("#tracker li.pip").deactivate();
 			$("audio").each(function(){
 				this.pause();
@@ -61,26 +61,26 @@ $(document).ready(function(){
 		},
 		change: function (config) {
 			if ('tempo' in config) {
-				$.drumz.tempo = config.tempo;
-				if ( $.drumz.playing ) {
-					$.drumz.stop(); 
-					$.drumz.start(); 
+				$.drum.tempo = config.tempo;
+				if ( $.drum.playing ) {
+					$.drum.stop(); 
+					$.drum.start(); 
 				}				
 			}
 		},
 		_play: function () {
-			var beat = $.drumz.tracker.activate_next(),
-				column = $.drumz.tracker.columns[beat],
+			var beat = $.drum.tracker.activate_next(),
+				column = $.drum.tracker.columns[beat],
 				sounds = column.active().map(function () { 
 							return $(this).data('sound');
 						}).get();
-			sounds.forEach($.drumz.sounds.play);
+			sounds.forEach($.drum.sounds.play);
 		},
 		serialize: function () {
 			return $(".soundrow[id^=control] li.pip").map(function () {
 					return $(this).active().length;
 				}).get().
-				concat('|', $.drumz.tempo).
+				concat('|', $.drum.tempo).
 				join('');
 		},
 		deserialize: function (str) {
@@ -95,7 +95,7 @@ $(document).ready(function(){
 			
 			if ( tempo ) {
 				$('#tempovalue').innerHTML = tempo;
-				$.drumz.tempo = tempo;
+				$.drum.tempo = tempo;
 				$('#temposlider').slider('value', tempo);
 			}	
 		},
@@ -103,13 +103,13 @@ $(document).ready(function(){
 		// make an array of length == number of beats
 		// pass in fn to build each element.  fn is passed beat index
 		_map_beats: function (fn) {
-			return $.map(new Array($.drumz.beats), function (nil, i) {
+			return $.map(new Array($.drum.beats), function (nil, i) {
 				return fn(i);
 			});
 		},
 		
 		_make_pips: function () {
-			var items = $.drumz._map_beats(li);
+			var items = $.drum._map_beats(li);
 			return $(items.join(''));
 			/////
 			function li () { return '<li class="pip"></li>'; }
@@ -118,21 +118,21 @@ $(document).ready(function(){
 		// make pips, append to given spot, and space out every 4 pips
 		// returns pips
 		_append_pips: function (appendTo) {
-			return $.drumz._make_pips().
+			return $.drum._make_pips().
 						appendTo(appendTo).
 						filter(':nth-child(4n+1)').
 							addClass('space').
 						end();
 		},
 
-		// § Components that make up the drumz §
+		// § Components that make up the drum §
 		tracker: {
 			_init: function () {
-				this.pips = $.drumz._append_pips('#tracker');				
+				this.pips = $.drum._append_pips('#tracker');				
 			},
 			
 			_load_columns: function () {
-				this.columns = $.drumz._map_beats(function (i) {
+				this.columns = $.drum._map_beats(function (i) {
 					var sel = ".soundrow[id^=control] li.pip:nth-child("+(i+2).toString()+")";
 					var el = $(sel);
 					// console.log(sel, el)
@@ -165,7 +165,7 @@ $(document).ready(function(){
 				return (this._cache || this._build_cache())[id];
 			},
 			play: function (id) {
-				var audio = $.drumz.sounds.get(id);
+				var audio = $.drum.sounds.get(id);
 				if ( !audio.paused ) {
 					audio.pause();
 					audio.currentTime = 0.0;
@@ -177,7 +177,7 @@ $(document).ready(function(){
 					var $ul = $('<ul id="control_' + this.id + '" class="soundrow">');
 					$ul.append('<li class="header">' + this.title + '</li>');
 
-					$.drumz._append_pips($ul).
+					$.drum._append_pips($ul).
 						data('sound', this.title).
 						click(function(){
 							$(this).toggleClass('active');
@@ -196,7 +196,7 @@ $(document).ready(function(){
 	}});
 	
 	// apply defaults
-	$.extend($.drumz, $.drumz.defaults);
+	$.extend($.drum, $.drum.defaults);
 	
 	// add element helper methods.  is this bad form??
 	$.fn.extend({
@@ -214,5 +214,5 @@ $(document).ready(function(){
 
 // Make a new hash
 function buildHash() {
-	location.hash = $.drumz.serialize();
+	location.hash = $.drum.serialize();
 } 

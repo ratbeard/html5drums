@@ -6,9 +6,14 @@ Courtesy of **jquery**, jqueryUI, the **html5** `<audio>` tag, and **browsers** 
 
 - Safari 4
 - Firefox 3.5
-- Chrome nightly (???)
-- Opera ???
-- Internet Explorer - not known :(
+- Chrome nightly (?)
+- Opera (supports audio API, but not the audio tag ?)
+- Internet Explorer 8 has no audio support whatsoever (barring _Silver-Light™_ and _Flash®-Technology_!)
+
+More about the current audio capabilities of browsers:
+
+- http://html5doctor.com/native-audio-in-the-browser/
+- …
 
 Install
 =======
@@ -17,13 +22,13 @@ Install
     cd html5drums
     open index.html  # on 
 
-Thanks
-======
+Sources && Thanks
+=================
 
 1. _Brian Arnold_ - original idea and implementer
 2. Browsers for implementing `<audio>`
 3. jquery and jqueryUI developers
-4. _God_ - for giving me strength (in my arms!)
+4. _God_ - for giving me strength -- in my arms! †
 
 License
 =======
