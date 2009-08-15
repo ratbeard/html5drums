@@ -152,8 +152,17 @@ $(document).ready(function(){
 			
 		}, 
 		sounds: {
+			_cache: null,
+			_build_cache: function () {
+				var cache = {};
+				$('audio').each(function () {
+					cache[this.title] = this;
+				});
+				this._cache = cache;
+				return cache;
+			},
 			get: function (id) {
-				return $('audio[title="'+id+'"]')[0];
+				return (this._cache || this._build_cache())[id];
 			},
 			play: function (id) {
 				var audio = $.drumz.sounds.get(id);
