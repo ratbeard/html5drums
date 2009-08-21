@@ -1,0 +1,71 @@
+- def audio_tag(path)
+  23
+
+!!!
+%html
+  %head
+    %meta{:charset=>"utf-8"}
+    %title HTML 5 Drum Kit
+      
+    /[if IE]
+      %script{:src => "http://html5shiv.googlecode.com/svn/trunk/html5.js"}
+      %style
+        article, aside, dialog, figure, footer, header,
+        hgroup, menu, nav, section { display: block; }
+    
+    %link{ :href => "reset.css", :rel => "stylesheet", :type => "text/css" }/
+    %link{ :href => "lab.css", :rel => "stylesheet", :type => "text/css" }/
+    %link{ :href => "http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/redmond/jquery-ui.css", :rel => "stylesheet", :type => "text/css" }/
+    %link{ :href => "html5drums.css", :rel => "stylesheet", :type => "text/css" }/    
+  
+  %body
+    %header
+      %h1 HTML5 Drum Kit
+    %section#content
+      %section#drumkit
+        %ul#lights
+          %li
+            %ul#tracker.soundrow
+              %li.header
+                Tracker
+        %ul#controls
+          %li
+            %button#soundstart Start / Stop
+          %li
+            %button#clearall Clear
+          %li
+            %button#reload Reload from Url
+          %li
+            %label
+              Tempo:
+              %span#tempovalue/
+              %abbr{ :title => "Beats per minute" }
+                BPM
+            #temposlider
+    %section#sounds
+      %audio{ :title => "Clap", :src => "sounds/Clap.wav"}/
+      %audio{ :title => "Cow Bell", :src => "sounds/Cow Bell.wav", :autobuffer => "" }/
+      %audio{ :title => "Crash Cymbal", :src => "sounds/Crash Cymbal.wav", :autobuffer => "" }
+
+    %footer
+      %p
+        HTML5 Drum Kit by
+        %a{ :href => "http://www.randomthink.net/" }
+          Brian Arnold, MIT licensed so snag away
+      %p
+        %a{ :href => "http://creativecommons.org/licenses/by-nc/3.0/us/", :rel => "license" }
+          %img{ :src => "http://i.creativecommons.org/l/by-nc/3.0/us/88x31.png", :alt => "Creative Commons License", :style => "border-width:0" }/
+        %br/
+        All audio sounds for
+        %span{ :href => "http://purl.org/dc/dcmitype/Sound", :rel => "dc:type", "xmlns:dc" => "http://purl.org/dc/elements/1.1/" }
+          HTML5 Drum Kit are licensed under a
+        %a{ :href => "http://creativecommons.org/licenses/by-nc/3.0/us/", :rel => "license" }
+          Creative Commons Attribution-Noncommercial 3.0 United States License. Created using the standard Hip Hop Drum Kit in GarageBand.
+
+
+    / others
+    - google = "http://ajax.googleapis.com/ajax/libs/"
+    %script{:src => google + "jquery/1.3/jquery.min.js"}
+    %script{:src => google + "jqueryui/1.7/jquery-ui.min.js"}
+    / mine
+    %script{ :src => "html5drums.js" }
