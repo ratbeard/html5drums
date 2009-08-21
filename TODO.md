@@ -18,6 +18,9 @@ This makes sense as a widget.  Need to figure out how to make one - though it lo
 
 At a minimum, tell it a container to render to.  Audio to use can be given as urls through js config, audio tags in a selector (default is page), or perhaps by default link to common set of sounds on the internet?
 
+- http://jqueryui.com/docs/Developer_Guide
+- http://bililite.com/blog/understanding-jquery-ui-widgets-a-tutorial/
+
 ## Get Online w/ github pages ##
 rake script to copy in to `gh-pages` repo.  
 
@@ -121,6 +124,10 @@ I can see them useful for improving speed once other extensions to the drum mach
 + coordinate between windows - sequencer, sound importer, chat room :)
 
 
+- http://ejohn.org/blog/web-workers/
+- https://developer.mozilla.org/En/Using_DOM_workers#Performing_web_I.2fO_in_the_background
+- https://developer.mozilla.org/En/Using_workers_in_extensions
+
 ## Storage ##
 
 Know very little about storage, and its support.  I'm quite against the idea of writing SQL in the browser (and in general).  Maybe a more key/value-ish, JSON storage mechanism is available?
@@ -137,12 +144,14 @@ html5!
 
 Chat and multi-user capabilities.  See collab project below.
 
+- http://dev.w3.org/html5/websockets/
+
 Projects
 ========
 
 ## Online Version ##
 
-Share Beats
+Share Beats.  No server storage needed, really, with urls.
 
 ## Collab ##
 gives you a beat.  You are allowed to make X number of tweaks (turning on/off a pip).  Try and find the best sounding progression of the current beat.  Can aggregrate results, even turning into a probabilistic beat.  

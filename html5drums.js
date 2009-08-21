@@ -53,7 +53,7 @@ $(document).ready(function(){
 		stop: function () {
 			$.drum.playing = false;
 			clearInterval($.drum.loop);
-			$("#tracker li.pip").deactivate();
+			$("#tracker li.pip").deactivate_pip();
 			$("audio").each(function(){
 				this.pause();
 				this.currentTime = 0.0;
@@ -71,14 +71,14 @@ $(document).ready(function(){
 		_play: function () {
 			var beat = $.drum.tracker.activate_next(),
 				column = $.drum.tracker.columns[beat],
-				sounds = column.active().map(function () { 
+				sounds = column.active_pips().map(function () { 
 							return $(this).data('sound');
 						}).get();
 			sounds.forEach($.drum.sounds.play);
 		},
 		serialize: function () {
 			return $(".soundrow[id^=control] li.pip").map(function () {
-					return $(this).active().length;
+					return $(this).active_pips().length;
 				}).get().
 				concat('|', $.drum.tempo).
 				join('');
@@ -90,7 +90,7 @@ $(document).ready(function(){
 				
 			$(".soundrow[id^=control] li.pip").each(function(i){
 				if ( i < notes.length && notes[i] == '1') 
-					$(this).activate();
+					$(this).activate_pip();
 			});
 			
 			if ( tempo ) {
@@ -146,7 +146,7 @@ $(document).ready(function(){
 			activate_next: function () {
 				var p = this.pips;
 				return p.index(
-					$(p.active().deactivate().next()[0] || p[0]).activate()
+					$(p.active_pips().deactivate_pip().next()[0] || p[0]).activate_pip()
 				);
 			},
 			
@@ -190,23 +190,23 @@ $(document).ready(function(){
 		},
 		notes: {
 			clear: function () {
-				$(".soundrow[id^=control] li.active").deactivate();
+				$(".soundrow[id^=control] li.active").deactivate_pip();
 			}
 		}
 	}});
 	
-	// apply defaults
+	// apply defaults options
 	$.extend($.drum, $.drum.defaults);
 	
-	// add element helper methods.  is this bad form??
+	// add jQuery element helper methods (with sufficiently obscure names)
 	$.fn.extend({
-		active: function () {
+		active_pips: function () {
 			return this.filter('.active');
 		},
-		activate: function () {
+		activate_pip: function () {
 			return this.addClass('active');
 		},
-		deactivate: function () {
+		deactivate_pip: function () {
 			return this.removeClass('active');
 		},
 	})
