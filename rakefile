@@ -19,8 +19,8 @@ task :compile do
   html = engine.render(Object.new, {:audio_tags => audio_tags})
   File.open(out_path, 'w') {|f| f.puts html }
   require 'sass'
-  css = Sass::Engine.new(IO.read('src/html5drums.sass')).render
-  File.open('out/html5drums.css', 'w') {|f| f.puts css }
+  css = Sass::Engine.new(IO.read('src/style.sass')).render
+  File.open('out/style.css', 'w') {|f| f.puts css }
 end
 
 task :open do
