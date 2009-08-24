@@ -1,5 +1,15 @@
 require 'rush'
 
+class HamlHelper
+  def stylesheet(href)
+    href = href.sub(/(\.css)?$/, '.css')
+    haml_tag 'link', {:rel => "stylesheet", :type => "text/css", :href => href}
+  end
+  def script(src)
+    src = src.sub(/(\.js)?$/, '.js')
+    haml_tag 'script', {:src => src}
+  end
+end
 
 source  = Rush.launch_dir['src/index.haml']
 sounds  = Rush.launch_dir['vendor/sounds/*.wav']
@@ -16,7 +26,7 @@ task :compile do
     "<audio title='#{name}' src='#{path}' autobuffer></audio>"
   }
   engine = Haml::Engine.new(source.contents)
-  html = engine.render(Object.new, {:audio_tags => audio_tags})
+  html = engine.render(HamlHelper.new, {:audio_tags => audio_tags})
   File.open(out_path, 'w') {|f| f.puts html }
   require 'sass'
   css = Sass::Engine.new(IO.read('src/style.sass')).render
