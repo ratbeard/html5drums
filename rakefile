@@ -1,25 +1,29 @@
 require 'rush'
 
-source  = Rush.launch_dir['source.html']
-out     = Rush.launch_dir['index.html']
-sounds  = Rush.launch_dir['sounds/*.wav']
 
+source  = Rush.launch_dir['src/index.haml']
+sounds  = Rush.launch_dir['vendor/sounds/*.wav']
+out_path =   'out/index.html'
+
+task :default => [:compile, :open]
   
 desc "Copy in sounds file paths as <audio> tags"
-task :compile => [:copy_source, :insert_audio_tags ]
-task :default => :compile
-
-desc "make a copy of our page template"
-task :copy_source do
-  source.duplicate 'index.html'
-end
-
-desc "insert audo tags into template copy"
-task :insert_audio_tags do
-  tags = sounds.map {|s| 
-    path = "sounds/#{s.name}"
+task :compile do
+  require 'haml'
+  audio_tags = sounds.map {|s| 
+    path = "assets/sounds/#{s.name}"
     name = s.name.split('.')[0]
     "<audio title='#{name}' src='#{path}' autobuffer></audio>"
   }
-  out.replace_contents!('<!-- audio goes here -->', tags.join("\n"))
+  engine = Haml::Engine.new(source.contents)
+  html = engine.render(Object.new, {:audio_tags => audio_tags})
+  File.open(out_path, 'w') {|f| f.puts html }
+  require 'sass'
+  css = Sass::Engine.new(IO.read('src/html5drums.sass')).render
+  File.open('out/html5drums.css', 'w') {|f| f.puts css }
 end
+
+task :open do
+  `open -a Safari #{out_path}`
+end
+
