@@ -16,6 +16,7 @@ $(document).ready(function(){
 			tempo: 120,
 			beats: 16
 		},
+		pip: '<td class="pip"></td>',
 		_init: function (root) {
 		  $.drum.root = root;
       $.drum.board = root.find('.drum-board');
@@ -124,8 +125,8 @@ $(document).ready(function(){
 			},
 			_init: function () {
 			  var pips_str = '';
-			  for (var i=0; i<16; i++)
-			    pips_str += '<td class="pip"></td>';
+			  for (var i=0; i<$.drum.beats; i++)
+			    pips_str += $.drum.pip;
 			  
 				$("audio").map(function() {
 				  console.log('got audio tag');
@@ -206,12 +207,20 @@ $(document).ready(function(){
     },
     move_beat: function () {
       return this.
-      removeClass('drum-now').
-      next().
+        removeClass('drum-now').
+        next_in_ring().
         // add('.soundrow[id^=control] li:first-child').
           // eq(0).
             addClass('drum-now');
       
+    },
+    next_in_ring: function () {
+      var $this, $next;
+      return this.map(function () {
+        $this = $(this);
+        $next = $this.next();
+        return ($next.length > 0 ? $next : $this.siblings('td:first')).get();
+      });
     }
 	})
 })(jQuery);
