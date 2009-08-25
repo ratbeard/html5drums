@@ -44,7 +44,6 @@ $(document).ready(function(){
 			var beat = $.drum.tracker.activate_next(),
 				column = $.drum.tracker.columns[beat],
 				sounds = column.active_pips().map(function () { 
-				      $(this).css('color:red');
 							return $(this).data('sound');
 						}).get();
 			sounds.forEach($.drum.sounds.play);
@@ -192,13 +191,11 @@ $(document).ready(function(){
       $.drum.tracker._init();
     	$.drum.sounds._init();
     	$.drum._tempo._init();
-    	// 
-    	asdf = this
+      //
     	this.find('.drum-play').toggle($.drum.start, $.drum.stop);
     	this.find('.drum-clear').click($.drum.notes.clear);
   		this.find('.drum-reload').click(parse_location_hash);
     	parse_location_hash();
-    	init_state();
     	return;
     	/////
     	function parse_location_hash() {
