@@ -19,10 +19,9 @@ $(document).ready(function(){
 		_init: function () {
     	$.drum.sounds._init();
     	$.drum._tempo._init();
-
 		},
 		start: function () {
-      $('.soundrow[id^=control] li:first-child').addClass('drum-now');
+      $('.soundrow[id^=control] li:first-child', this).addClass('drum-now');
 			$.drum.playing = true;
 			$.drum.loop = setInterval($.drum._play, 60000 / $.drum.tempo / 4);
 		},
@@ -168,6 +167,7 @@ $(document).ready(function(){
 	$.fn.extend({
     drum: function (config) {
     	$.drum._init();
+    	$.drum.root = this;
       //
     	this.find('.drum-play').toggle($.drum.start, $.drum.stop);
     	this.find('.drum-clear').click($.drum.notes.clear);
