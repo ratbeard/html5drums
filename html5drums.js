@@ -18,6 +18,7 @@ $(document).ready(function(){
 		},
 		start: function () {
 			$.drum.tracker._load_columns();
+			$.drum.tracker.columns[0].addClass('drum-now');
 			var time = 60000 / $.drum.tempo / 4;
 			$.drum.playing = true;
 			$.drum.loop = setInterval($.drum._play, time);
@@ -41,12 +42,14 @@ $(document).ready(function(){
 			}
 		},
 		_play: function () {
-			var beat = $.drum.tracker.activate_next(),
-				column = $.drum.tracker.columns[beat],
-				sounds = column.active_pips().map(function () { 
-							return $(this).data('sound');
-						}).get();
-			sounds.forEach($.drum.sounds.play);
+			$('.drum-now').
+			  filter('.active').
+			    each(function () {
+			      $.drum.sounds.play( $(this).data('sound') );
+			    }).end().
+        removeClass('drum-now').
+        next().
+          addClass('drum-now');
 		},
 		serialize: function () {
 			return $(".soundrow[id^=control] li.pip").map(function () {
