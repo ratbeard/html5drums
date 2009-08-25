@@ -23,7 +23,7 @@ $(document).ready(function(){
     	$.drum._tempo._init();
 		},
 		start: function () {
-      $('.soundrow[id^=control] li:first-child').addClass('drum-now');
+		  $.drum.board.find('tr td:nth-child(2)').addClass('drum-now');
 			$.drum.playing = true;
 			$.drum.loop = setInterval($.drum._play, 60000 / $.drum.tempo / 4);
 		},
