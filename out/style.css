@@ -10,8 +10,6 @@ header, footer, section {
   padding: 1em;
   border-bottom: inset 5px blue; }
 
-header h1 {
-  font-size: 3em; }
 
 ul {
   padding-left: 1em; }
