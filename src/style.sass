@@ -13,12 +13,6 @@ header, footer, section
 
 header h1
   / font-size: 3em
-
-ul
-  padding-left: 1em
-
-li
-  padding-bottom: 0.5em
   
 #sounds
   :display none
@@ -34,16 +28,6 @@ li
   :-webkit-user-select none
   :user-select none
   
-  > ul
-    :padding 0px
-    :display inline-block
-    :vertical-align top
-
-
-li.active
-  :border inset 3px #FFA000
-  :background-color #FFA000
-  
 
 .pip
   :width 20px
@@ -54,11 +38,15 @@ li.active
   :text-indent -9999px
 
   &.drum-now
-    :background-color #FFA000 !important
+    :background-color #FFA000
 
-.on
-  :border inset 3px #990
-  :background-color #CC0
+  &.on
+    :border inset 3px #990
+    :background-color #CC0
+
+    &.drum-now
+      :background-color red 
+    
     
 #controls
   :width 140px

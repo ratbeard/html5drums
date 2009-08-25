@@ -11,12 +11,6 @@ header, footer, section {
   border-bottom: inset 5px blue; }
 
 
-ul {
-  padding-left: 1em; }
-
-li {
-  padding-bottom: 0.5em; }
-
 #sounds {
   display: none; }
 
@@ -30,14 +24,6 @@ li {
   -moz-user-select: none;
   -webkit-user-select: none;
   user-select: none; }
-  #drumkit > ul {
-    padding: 0px;
-    display: inline-block;
-    vertical-align: top; }
-
-li.active {
-  border: inset 3px #FFA000;
-  background-color: #FFA000; }
 
 .pip {
   width: 20px;
@@ -47,11 +33,12 @@ li.active {
   margin-right: 5px;
   text-indent: -9999px; }
   .pip.drum-now {
-    background-color: #FFA000 !important; }
-
-.on {
-  border: inset 3px #990;
-  background-color: #CC0; }
+    background-color: #FFA000; }
+  .pip.on {
+    border: inset 3px #990;
+    background-color: #CC0; }
+    .pip.on.drum-now {
+      background-color: red; }
 
 #controls {
   width: 140px;
