@@ -51,25 +51,16 @@ li.active {
   .pip.drum-now {
     background-color: #FFA000 !important; }
 
+.on {
+  border: inset 3px #990;
+  background-color: #CC0; }
+
 #controls {
   width: 140px;
   color: #FFF; }
 
 #temposlider {
   margin-top: 0.5em; }
-
-ul.soundrow li {
-  display: inline-block;
-  height: 15px; }
-  ul.soundrow li.header {
-    width: 150px;
-    padding-bottom: 0.1em;
-    background-color: #CCC;
-    border: outset 3px #CCC;
-    margin-right: 20px; }
-  ul.soundrow li.active {
-    border: inset 3px #990;
-    background-color: #CC0; }
 
 .space {
   margin-right: 15px !important; }

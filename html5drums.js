@@ -16,12 +16,14 @@ $(document).ready(function(){
 			tempo: 120,
 			beats: 16
 		},
-		_init: function () {
+		_init: function (root) {
+		  $.drum.root = root;
+      $.drum.board = root.find('.drum-board');
     	$.drum.sounds._init();
     	$.drum._tempo._init();
 		},
 		start: function () {
-      $('.soundrow[id^=control] li:first-child', this).addClass('drum-now');
+      $('.soundrow[id^=control] li:first-child').addClass('drum-now');
 			$.drum.playing = true;
 			$.drum.loop = setInterval($.drum._play, 60000 / $.drum.tempo / 4);
 		},
@@ -40,7 +42,7 @@ $(document).ready(function(){
 		},
 		_play: function () {
 			$('.drum-now').
-			  filter('.active').
+			  filter('.on').
 			    each(function () {
 			      $.drum.sounds.play( $(this).data('sound') );
 			    }).end().
@@ -51,7 +53,7 @@ $(document).ready(function(){
               addClass('drum-now');
 		},
 		serialize: function () {
-			return $(".soundrow[id^=control] li.pip").map(function () {
+			return $(".pip").map(function () {
 					return $(this).active_pips().length;
 				}).get().
 				concat('|', $.drum.tempo).
@@ -62,7 +64,7 @@ $(document).ready(function(){
 				notes = parts[0],					
 				tempo = parseInt(parts[1]);
 				
-			$(".soundrow[id^=control] li.pip").each(function(i){
+			$(".pip").each(function(i){
 				if ( i < notes.length && notes[i] == '1') 
 					$(this).activate_pip();
 			});
@@ -122,19 +124,23 @@ $(document).ready(function(){
 				audio.play();
 			},
 			_init: function () {
-				$("audio").each(function(i){
-					var $ul = $('<ul id="control_' + this.id + '" class="soundrow">');
-          $ul.append('<li class="header">' + this.title + '</li>');
-
-					$.drum._append_pips($ul).
+			  var pips_str = '';
+			  for (var i=0; i<16; i++)
+			    pips_str += '<td class="pip"></td>';
+			  
+				$("audio").map(function() {
+				  console.log('got audio tag');
+				  $row = $('<tr><th>'+this.title+'</th>'+pips_str+'</tr>')
+          $row.children('.pip').
 						data('sound', this.title).
 						click(function(){
-							$(this).toggleClass('active');
+						  console.log('clack');
+						  console.log(this);
+							$(this).toggleClass('on');
 							buildHash();
 						});
-
-					$('#lights').append($('<li>').append($ul));
-				});
+					return $row;
+				}).appendTo($.drum.board);
 			},
 		},
 		
@@ -155,7 +161,7 @@ $(document).ready(function(){
 		
 		notes: {
 			clear: function () {
-				$(".soundrow[id^=control] li.active").deactivate_pip();
+				$(".pip.on").deactivate_pip();
 			}
 		}
 	}});
@@ -166,8 +172,7 @@ $(document).ready(function(){
 	// add jQuery element helper methods (with sufficiently obscure names)
 	$.fn.extend({
     drum: function (config) {
-    	$.drum._init();
-    	$.drum.root = this;
+    	$.drum._init(this);
       //
     	this.find('.drum-play').toggle($.drum.start, $.drum.stop);
     	this.find('.drum-clear').click($.drum.notes.clear);
@@ -181,13 +186,13 @@ $(document).ready(function(){
     	}
     },
 		active_pips: function () {
-			return this.filter('.active');
+			return this.filter('.on');
 		},
 		activate_pip: function () {
-			return this.addClass('active');
+			return this.addClass('on');
 		},
 		deactivate_pip: function () {
-			return this.removeClass('active');
+			return this.removeClass('on');
 		},
 	})
 })(jQuery);
