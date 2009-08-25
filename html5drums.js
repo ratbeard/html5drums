@@ -41,16 +41,14 @@ $(document).ready(function(){
 			}
 		},
 		_play: function () {
-			$('.drum-now').
-			  filter('.on').
-			    each(function () {
-			      $.drum.sounds.play( $(this).data('sound') );
-			    }).end().
-        removeClass('drum-now').
-        next().
-          // add('.soundrow[id^=control] li:first-child').
-            // eq(0).
-              addClass('drum-now');
+      // $.drum.sounds.beat(1).now()
+      $.drum.board.
+        current_beat().
+        turned_on().
+          play_sound().
+        end().
+        move_beat();
+
 		},
 		serialize: function () {
 			return $(".pip").map(function () {
@@ -116,6 +114,7 @@ $(document).ready(function(){
 				return (this._cache || this._build_cache())[id];
 			},
 			play: function (id) {
+			  console.log('play', id);
 				var audio = $.drum.sounds.get(id);
 				if ( !audio.paused ) {
 					audio.pause();
@@ -194,6 +193,26 @@ $(document).ready(function(){
 		deactivate_pip: function () {
 			return this.removeClass('on');
 		},
+    current_beat: function () {
+      return this.find('.drum-now');
+    },
+    turned_on: function () {
+      return this.filter('.on');
+    },
+    play_sound: function () {
+      return this.each(function () {
+        $.drum.sounds.play( $(this).data('sound') );
+      })
+    },
+    move_beat: function () {
+      return this.
+      removeClass('drum-now').
+      next().
+        // add('.soundrow[id^=control] li:first-child').
+          // eq(0).
+            addClass('drum-now');
+      
+    }
 	})
 })(jQuery);
 
