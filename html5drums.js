@@ -16,21 +16,19 @@ $(document).ready(function(){
 			tempo: 120,
 			beats: 16
 		},
+		_init: function () {
+    	$.drum.sounds._init();
+    	$.drum._tempo._init();
+
+		},
 		start: function () {
-			$.drum.tracker._load_columns();
-			$.drum.tracker.columns[0].addClass('drum-now');
-			var time = 60000 / $.drum.tempo / 4;
+      $('.soundrow[id^=control] li:first-child').addClass('drum-now');
 			$.drum.playing = true;
-			$.drum.loop = setInterval($.drum._play, time);
+			$.drum.loop = setInterval($.drum._play, 60000 / $.drum.tempo / 4);
 		},
 		stop: function () {
 			$.drum.playing = false;
 			clearInterval($.drum.loop);
-			$("#tracker li.pip").deactivate_pip();
-			$("audio").each(function(){
-				this.pause();
-				this.currentTime = 0.0;
-			});
 		},
 		change: function (config) {
 			if ('tempo' in config) {
@@ -49,7 +47,9 @@ $(document).ready(function(){
 			    }).end().
         removeClass('drum-now').
         next().
-          addClass('drum-now');
+          // add('.soundrow[id^=control] li:first-child').
+            // eq(0).
+              addClass('drum-now');
 		},
 		serialize: function () {
 			return $(".soundrow[id^=control] li.pip").map(function () {
@@ -101,30 +101,6 @@ $(document).ready(function(){
 		},
 
 		// § Components that make up the drum §
-		tracker: {
-			_init: function () {
-				this.pips = $.drum._append_pips('#tracker');				
-			},
-			
-			_load_columns: function () {
-				this.columns = $.drum._map_beats(function (i) {
-					var sel = ".soundrow[id^=control] li.pip:nth-child("+(i+2).toString()+")";
-					var el = $(sel);
-					// console.log(sel, el)
-					return el;
-				});
-			},
-			
-			// deactivates the current pip and activates the next pip
-			// starts at pip 0, wraps around to pip 0
-			// returns the index of the newly activated pip
-			activate_next: function () {
-				var pips = this.pips,
-				  next = pips.active_pips().deactivate_pip().next()[0] || pips[0];
-				return pips.index($(next).activate_pip());
-			},
-		}, 
-		
 		sounds: {
 			_cache: null,
 			_build_cache: function () {
@@ -149,7 +125,7 @@ $(document).ready(function(){
 			_init: function () {
 				$("audio").each(function(i){
 					var $ul = $('<ul id="control_' + this.id + '" class="soundrow">');
-					$ul.append('<li class="header">' + this.title + '</li>');
+          $ul.append('<li class="header">' + this.title + '</li>');
 
 					$.drum._append_pips($ul).
 						data('sound', this.title).
@@ -191,9 +167,7 @@ $(document).ready(function(){
 	// add jQuery element helper methods (with sufficiently obscure names)
 	$.fn.extend({
     drum: function (config) {
-      $.drum.tracker._init();
-    	$.drum.sounds._init();
-    	$.drum._tempo._init();
+    	$.drum._init();
       //
     	this.find('.drum-play').toggle($.drum.start, $.drum.stop);
     	this.find('.drum-clear').click($.drum.notes.clear);

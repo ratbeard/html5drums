@@ -37,15 +37,6 @@ li {
     display: inline-block;
     vertical-align: top; }
 
-#lights > li {
-  padding-bottom: 0px; }
-#lights ul {
-  padding: 0px;
-  margin-right: 10px; }
-
-#tracker {
-  margin-bottom: 10px; }
-
 li.active {
   border: inset 3px #FFA000;
   background-color: #FFA000; }
@@ -58,7 +49,7 @@ li.active {
   margin-right: 5px;
   text-indent: -9999px; }
   .pip.drum-now {
-    background-color: #FFA000; }
+    background-color: #FFA000 !important; }
 
 #controls {
   width: 140px;
