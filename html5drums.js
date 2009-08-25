@@ -5,34 +5,7 @@
  * Original drum kit samples freely used from http://bigsamples.free.fr/
  */
 $(document).ready(function(){
-	$.drum.tracker._init();
-	$.drum.sounds._init();
-	bind_buttons();
-	parse_location_hash();
-	init_state();
-	return;
-	/////
-	function parse_location_hash() {
-		if (location.hash.length > 0)
-			$.drum.deserialize(location.hash.substring(1));
-	}
-	function bind_buttons() {
-		$("#soundstart").toggle($.drum.start, $.drum.stop);
-		$('#clearall').click($.drum.notes.clear);
-		$('#reload').click(parse_location_hash);
-	}
-	function init_state () {		
-		$('#tempovalue').html($.drum.tempo);
-		$('#temposlider').slider({
-			'min': 30, 'max': 180, 'step': 10, 
-			'value': $.drum.tempo,
-			'slide': function(e, ui) {
-				$('#tempovalue').html(ui.value);
-				$.drum.change({tempo: ui.value});
-			},
-			'stop': buildHash
-		});
-	}
+  $('#drumkit').drum();
 });
 
 // extend jQuery with drum plugin
@@ -46,7 +19,6 @@ $(document).ready(function(){
 		start: function () {
 			$.drum.tracker._load_columns();
 			var time = 60000 / $.drum.tempo / 4;
-			//
 			$.drum.playing = true;
 			$.drum.loop = setInterval($.drum._play, time);
 		},
@@ -72,6 +44,7 @@ $(document).ready(function(){
 			var beat = $.drum.tracker.activate_next(),
 				column = $.drum.tracker.columns[beat],
 				sounds = column.active_pips().map(function () { 
+				      $(this).css('color:red');
 							return $(this).data('sound');
 						}).get();
 			sounds.forEach($.drum.sounds.play);
@@ -144,13 +117,12 @@ $(document).ready(function(){
 			// starts at pip 0, wraps around to pip 0
 			// returns the index of the newly activated pip
 			activate_next: function () {
-				var p = this.pips;
-				return p.index(
-					$(p.active_pips().deactivate_pip().next()[0] || p[0]).activate_pip()
-				);
+				var pips = this.pips,
+				  next = pips.active_pips().deactivate_pip().next()[0] || pips[0];
+				return pips.index($(next).activate_pip());
 			},
-			
 		}, 
+		
 		sounds: {
 			_cache: null,
 			_build_cache: function () {
@@ -188,6 +160,22 @@ $(document).ready(function(){
 				});
 			},
 		},
+		
+		_tempo: {
+		  _init: function () {
+		    $('#tempovalue').html($.drum.tempo);
+    		$('#temposlider').slider({
+    			'min': 30, 'max': 180, 'step': 10, 
+    			'value': $.drum.tempo,
+    			'slide': function(e, ui) {
+    				$('#tempovalue').html(ui.value);
+    				$.drum.change({tempo: ui.value});
+    			},
+    			'stop': buildHash
+    		});
+		  },
+		},
+		
 		notes: {
 			clear: function () {
 				$(".soundrow[id^=control] li.active").deactivate_pip();
@@ -200,6 +188,24 @@ $(document).ready(function(){
 	
 	// add jQuery element helper methods (with sufficiently obscure names)
 	$.fn.extend({
+    drum: function (config) {
+      $.drum.tracker._init();
+    	$.drum.sounds._init();
+    	$.drum._tempo._init();
+    	// 
+    	asdf = this
+    	this.find('.drum-play').toggle($.drum.start, $.drum.stop);
+    	this.find('.drum-clear').click($.drum.notes.clear);
+  		this.find('.drum-reload').click(parse_location_hash);
+    	parse_location_hash();
+    	init_state();
+    	return;
+    	/////
+    	function parse_location_hash() {
+    		if (location.hash.length > 0)
+    			$.drum.deserialize(location.hash.substring(1));
+    	}
+    },
 		active_pips: function () {
 			return this.filter('.active');
 		},
