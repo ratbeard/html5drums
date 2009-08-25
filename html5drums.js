@@ -127,20 +127,18 @@ $(document).ready(function(){
 			  var pips_str = '';
 			  for (var i=0; i<$.drum.beats; i++)
 			    pips_str += $.drum.pip;
-			  
+			    
 				$("audio").map(function() {
-				  console.log('got audio tag');
-				  $row = $('<tr><th>'+this.title+'</th>'+pips_str+'</tr>')
-          $row.children('.pip').
-						data('sound', this.title).
-						click(function(){
-						  console.log('clack');
-						  console.log(this);
-							$(this).toggleClass('on');
-							buildHash();
-						});
-					return $row;
+				  return $('<tr><th>'+this.title+'</th>'+pips_str+'</tr>').data('sound', this.title);
 				}).appendTo($.drum.board);
+				
+				$.drum.board.find('.pip').live('click', function () {
+				  console.log('clack');
+				  console.log(this);
+				  console.log($(this).parent().data('sound'))
+					$(this).toggleClass('on');
+					buildHash();
+				});        
 			},
 		},
 		
@@ -201,8 +199,9 @@ $(document).ready(function(){
       return this.filter('.on');
     },
     play_sound: function () {
+      xX = this
       return this.each(function () {
-        $.drum.sounds.play( $(this).data('sound') );
+        $.drum.sounds.play( $(this).parent().data('sound') );
       })
     },
     move_beat: function () {
