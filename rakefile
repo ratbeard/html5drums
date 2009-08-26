@@ -23,7 +23,8 @@ task :compile do
   audio_tags = sounds.map {|s| 
     path = "assets/sounds/#{s.name}"
     name = s.name.split('.')[0]
-    "<audio title='#{name}' src='#{path}' autobuffer></audio>"
+    classes = name.split('-').map {|c| "sound-" << c}.join ' '
+    "<audio title='#{name}' src='#{path}' class='#{classes}' autobuffer></audio>"
   }
   engine = Haml::Engine.new(source.contents)
   html = engine.render(HamlHelper.new, {:audio_tags => audio_tags})
