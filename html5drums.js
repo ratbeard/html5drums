@@ -96,33 +96,10 @@ $(document).ready(function(){
 			}	
 		},
 		
-		// make an array of length == number of beats
-		// pass in fn to build each element.  fn is passed beat index
-		_map_beats: function (fn) {
-			return $.map(new Array($.drum.beats), function (nil, i) {
-				return fn(i);
-			});
-		},
-		
-		_make_pips: function () {
-			var items = $.drum._map_beats(li);
-			return $(items.join(''));
-			/////
-			function li () { return '<li class="pip"></li>'; }
-		},
-		
-		// make pips, append to given spot, and space out every 4 pips
-		// returns pips
-		_append_pips: function (appendTo) {
-			return $.drum._make_pips().
-						appendTo(appendTo).
-						filter(':nth-child(4n+1)').
-							addClass('space').
-						end();
-		},
     sound: function (name) {
       return $('audio.sound-'+name);
     },
+    
 		// § Components that make up the drum §
 		sounds: {
 			_cache: null,
