@@ -20,6 +20,9 @@ $(document).ready(function(){
 		_init: function (root) {
 		  $.drum.root = root;
       $.drum.board = root.find('.drum-board');
+      $.drum.board.clear = function () { 
+          $(".pip.on").deactivate_pip();
+			}
     	$.drum.sounds._init();
     	$.drum._tempo._init();
 		},
@@ -99,7 +102,9 @@ $(document).ready(function(){
 							addClass('space').
 						end();
 		},
-
+    sound: function (name) {
+      return $('audio.sound-'+name);
+    },
 		// § Components that make up the drum §
 		sounds: {
 			_cache: null,
@@ -141,7 +146,6 @@ $(document).ready(function(){
 				});        
 			},
 		},
-		
 		_tempo: {
 		  _init: function () {
 		    $('#tempovalue').html($.drum.tempo);
@@ -155,13 +159,7 @@ $(document).ready(function(){
     			'stop': buildHash
     		});
 		  },
-		},
-		
-		notes: {
-			clear: function () {
-				$(".pip.on").deactivate_pip();
-			}
-		}
+		},		
 	}});
 	
 	// apply defaults options
@@ -173,7 +171,7 @@ $(document).ready(function(){
     	$.drum._init(this);
       //
     	this.find('.drum-play').toggle($.drum.start, $.drum.stop);
-    	this.find('.drum-clear').click($.drum.notes.clear);
+    	this.find('.drum-clear').click($.drum.board.clear);
   		this.find('.drum-reload').click(parse_location_hash);
     	parse_location_hash();
     	return;
