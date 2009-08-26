@@ -29,52 +29,44 @@ $(document).ready(function(){
       }
     },
 		_init: function () {
-		  build_board();
+		  build_board($('audio'));
       setup_controls();  		
     	parse_location_hash();
     	return;
     	/////
-    	function build_board () {
-    	  var $audio = $('audio');
-    	  
+    	function build_board ($audio) {
     	  $audio.
     	    wrap('<th></th>').
-    	    each(function () {
-      	    $(this).parent().append('<span>'+this.title+'</span>');
-      	  }).
+    	    each(add_title).
     	    parent().
     	      wrap('<tr></tr>').
     	      parent().
+              each(add_sound_data).
     	        append($.drum.pips.make()).
     	        wrapAll('<table class="drum-board"></table>')
 
-
 			  $.drum.board = $('.drum-board')  
-        // $("audio").
-        //   map(function() {
-        //   return $('<tr><th>'+this.title+'</th>'+pips_str+'</tr>').data('sound', this.title);
-        // }).appendTo($.drum.board);
+			  $.drum.kit = $.drum.board.parents('section'); 
 				
 				$.drum.board.find('.pip').live('click', function () {
-				  console.log('clack');
-				  console.log(this);
-				  console.log($(this).parent().data('sound'))
 					$(this).toggleClass('on');
 					buildHash();
 				});
 				
-				root = $.drum.board.parents('container'); 
-				
-        $.drum.sounds._init();
-        $.drum.board.clear = function () { 
-            $(".pip.on").deactivate_pip();
-  			}    	  
+        $.drum.board.clear = function () { $(".pip.on").deactivate_pip(); }  
+  			///// 
+  			function add_title () {
+    	    $(this).parent().append('<span>'+this.title+'</span>');
+    	  }
+    	  function add_sound_data () {
+    	    $(this).data('sound', $(this).find('audio')[0].title)
+    	  }
     	}
     	function setup_controls () {
         $.drum._tempo._init();
-        root.find('.drum-play').toggle($.drum.start, $.drum.stop);
-      	root.find('.drum-clear').click($.drum.board.clear);
-    		root.find('.drum-reload').click(parse_location_hash);
+        $.drum.kit.find('.drum-play').toggle($.drum.start, $.drum.stop);
+      	$.drum.kit.find('.drum-clear').click($.drum.board.clear);
+    		$.drum.kit.find('.drum-reload').click(parse_location_hash);
     	}
     	function parse_location_hash() {
     		if (location.hash.length > 0)
