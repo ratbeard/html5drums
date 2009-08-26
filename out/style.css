@@ -49,3 +49,6 @@ header, footer, section {
 
 .space {
   margin-right: 15px !important; }
+
+footer {
+  display: none; }
