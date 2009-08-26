@@ -5,12 +5,13 @@
  * Original drum kit samples freely used from http://bigsamples.free.fr/
  */
 $(document).ready(function(){
-  $('#drumkit').drum();
+  $.drum._init();
 });
 
 // extend jQuery with drum plugin
 (function ($) {
 	$.extend({drum: {
+	  
 		defaults: {
 			playing: false,
 			tempo: 120,
@@ -18,20 +19,56 @@ $(document).ready(function(){
 		},
 
 		pip: '<td class="pip"></td>',
-
-		_init: function (root) {
-		  $.drum.root = root;
+    pips: {
+      make: function (num) {
+        num = num || $.drum.beats;
+        var str = '';
+        for (var i=0; i<num; i++)
+			    str += $.drum.pip;
+			  return str;
+      }
+    },
+		_init: function () {
 		  build_board();
       setup_controls();  		
     	parse_location_hash();
     	return;
     	/////
     	function build_board () {
-      	$.drum.board = root.find('.drum-board');
+    	  var $audio = $('audio');
+    	  
+    	  $audio.
+    	    wrap('<th></th>').
+    	    each(function () {
+      	    $(this).parent().append('<span>'+this.title+'</span>');
+      	  }).
+    	    parent().
+    	      wrap('<tr></tr>').
+    	      parent().
+    	        append($.drum.pips.make()).
+    	        wrapAll('<table class="drum-board"></table>')
+
+
+			  $.drum.board = $('.drum-board')  
+        // $("audio").
+        //   map(function() {
+        //   return $('<tr><th>'+this.title+'</th>'+pips_str+'</tr>').data('sound', this.title);
+        // }).appendTo($.drum.board);
+				
+				$.drum.board.find('.pip').live('click', function () {
+				  console.log('clack');
+				  console.log(this);
+				  console.log($(this).parent().data('sound'))
+					$(this).toggleClass('on');
+					buildHash();
+				});
+				
+				root = $.drum.board.parents('container'); 
+				
+        $.drum.sounds._init();
         $.drum.board.clear = function () { 
             $(".pip.on").deactivate_pip();
   			}    	  
-        $.drum.sounds._init();
     	}
     	function setup_controls () {
         $.drum._tempo._init();
@@ -70,7 +107,6 @@ $(document).ready(function(){
           play_sound().
         end().
         move_beat();
-
 		},
 		serialize: function () {
 			return $(".pip").map(function () {
@@ -124,21 +160,7 @@ $(document).ready(function(){
 				audio.play();
 			},
 			_init: function () {
-			  var pips_str = '';
-			  for (var i=0; i<$.drum.beats; i++)
-			    pips_str += $.drum.pip;
-			    
-				$("audio").map(function() {
-				  return $('<tr><th>'+this.title+'</th>'+pips_str+'</tr>').data('sound', this.title);
-				}).appendTo($.drum.board);
-				
-				$.drum.board.find('.pip').live('click', function () {
-				  console.log('clack');
-				  console.log(this);
-				  console.log($(this).parent().data('sound'))
-					$(this).toggleClass('on');
-					buildHash();
-				});        
+
 			},
 		},
 		_tempo: {
@@ -162,9 +184,9 @@ $(document).ready(function(){
 	
 	// add jQuery element helper methods (with sufficiently obscure names)
 	$.fn.extend({
-    drum: function (config) {
-    	$.drum._init(this);
-    },
+    // drum: function (config) {
+    //  $.drum._init(this);
+    // },
 		active_pips: function () {
 			return this.filter('.on');
 		},

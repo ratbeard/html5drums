@@ -11,9 +11,6 @@ header, footer, section {
   border-bottom: inset 5px blue; }
 
 
-#sounds {
-  display: none; }
-
 #drumkit {
   padding: 10px;
   border: 5px solid #666;

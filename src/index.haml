@@ -23,7 +23,7 @@
       %h1 HTML5 Drum Kit
     %section#content
       %section#drumkit
-        %table.drum-board
+        #sounds= audio_tags.join("\n")
         %ul#controls
           %li<
             %button.drum-play Start / Stop
@@ -38,8 +38,7 @@
                 %abbr{ :title => "Beats per minute" }
                   BPM
             #temposlider
-            
-    %section#sounds= audio_tags.join("\n")
+
 
     %footer
       %p
