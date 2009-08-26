@@ -16,15 +16,33 @@ $(document).ready(function(){
 			tempo: 120,
 			beats: 16
 		},
+
 		pip: '<td class="pip"></td>',
+
 		_init: function (root) {
 		  $.drum.root = root;
-      $.drum.board = root.find('.drum-board');
-      $.drum.board.clear = function () { 
-          $(".pip.on").deactivate_pip();
-			}
-    	$.drum.sounds._init();
-    	$.drum._tempo._init();
+		  build_board();
+      setup_controls();  		
+    	parse_location_hash();
+    	return;
+    	/////
+    	function build_board () {
+      	$.drum.board = root.find('.drum-board');
+        $.drum.board.clear = function () { 
+            $(".pip.on").deactivate_pip();
+  			}    	  
+        $.drum.sounds._init();
+    	}
+    	function setup_controls () {
+        $.drum._tempo._init();
+        root.find('.drum-play').toggle($.drum.start, $.drum.stop);
+      	root.find('.drum-clear').click($.drum.board.clear);
+    		root.find('.drum-reload').click(parse_location_hash);
+    	}
+    	function parse_location_hash() {
+    		if (location.hash.length > 0)
+    			$.drum.deserialize(location.hash.substring(1));
+    	}
 		},
 		start: function () {
 		  $.drum.board.find('tr td:nth-child(2)').addClass('drum-now');
@@ -169,17 +187,6 @@ $(document).ready(function(){
 	$.fn.extend({
     drum: function (config) {
     	$.drum._init(this);
-      //
-    	this.find('.drum-play').toggle($.drum.start, $.drum.stop);
-    	this.find('.drum-clear').click($.drum.board.clear);
-  		this.find('.drum-reload').click(parse_location_hash);
-    	parse_location_hash();
-    	return;
-    	/////
-    	function parse_location_hash() {
-    		if (location.hash.length > 0)
-    			$.drum.deserialize(location.hash.substring(1));
-    	}
     },
 		active_pips: function () {
 			return this.filter('.on');
