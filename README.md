@@ -8,7 +8,7 @@ Courtesy of jquery, jqueryUI, the html5 `<audio>` tag, and browsers that impleme
 - Safari 4
 - Firefox 3.5
 - Chrome nightly (?)
-- Opera (supports audio API, but not the audio tag ?)
+- Opera (supports audio JS API, but not the audio tag ?)
 - Internet Explorer 8 has no audio support whatsoever (barring _Silver-Light™_ and _Flash®-Technology_!)
 
 More about the current audio capabilities of browsers:
@@ -21,7 +21,18 @@ Install
 
     git clone git://github.com/ratbeard/html5drums.git
     cd html5drums
-    open index.html  # on 
+    open out/index.html  # on 
+
+Usage
+=====
+
+Firefox is a little slow for this, especially with firebug open -- Webkit works better.
+
+get crazy!:
+
+    $.drum.sound('bass').addpip()
+
+
 
 Sources && Thanks
 =================

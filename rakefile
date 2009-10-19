@@ -1,5 +1,6 @@
 require 'rush'
 
+
 class HamlHelper
   def stylesheet(href)
     href = href.sub(/(\.css)?$/, '.css')
@@ -13,7 +14,7 @@ end
 
 source  = Rush.launch_dir['src/index.haml']
 sounds  = Rush.launch_dir['vendor/sounds/*.wav']
-out_path =   'out/index.html'
+out_path = 'out/index.html'
 
 task :default => [:compile, :open]
   
@@ -29,6 +30,7 @@ task :compile do
   engine = Haml::Engine.new(source.contents)
   html = engine.render(HamlHelper.new, {:audio_tags => audio_tags})
   File.open(out_path, 'w') {|f| f.puts html }
+  
   require 'sass'
   css = Sass::Engine.new(IO.read('src/style.sass')).render
   File.open('out/style.css', 'w') {|f| f.puts css }

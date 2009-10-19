@@ -1,22 +1,24 @@
-/ expects `audio_tags`
-
+/ expects `audio_tags` var
+/ expects `style` and `script` helpers, see rakefile
+/ helper shortcut to google url:
 - google = lambda {|path| "http://ajax.googleapis.com/ajax/libs/#{path}" }
 
 !!!
 %html
   %head
-    %meta{:charset=>"utf-8"}
+    %meta{ :charset=>"utf-8" }
     %title HTML 5 Drum Kit
 
     = stylesheet 'assets/reset.css'
     = stylesheet  google["jqueryui/1.7.2/themes/redmond/jquery-ui"]
     = stylesheet 'style.css'    
 
+    %style
+      article, aside, dialog, figure, footer, header,
+      hgroup, menu, nav, section { display: block; }
+
     /[if IE]
       =script "http://html5shiv.googlecode.com/svn/trunk/html5.js"
-      %style
-        article, aside, dialog, figure, footer, header,
-        hgroup, menu, nav, section { display: block; }
     
   %body
     %header
@@ -58,6 +60,7 @@
     / §cripts
     / others
     =script google["jquery/1.3/jquery.min.js"]
+    =script 'assets/array'
     =script google["jqueryui/1.7/jquery-ui.min.js"]
     / mine
     =script "html5drums.js"

@@ -1,4 +1,6 @@
-<!-- expects `audio_tags` -->
+<!-- expects `audio_tags` var -->
+<!-- expects `style` and `script` helpers, see rakefile -->
+<!-- helper shortcut to google url: -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
   <head>
@@ -10,13 +12,13 @@
 
         <link href='style.css' rel='stylesheet' type='text/css' />
 
+    <style>
+      article, aside, dialog, figure, footer, header,
+      hgroup, menu, nav, section { display: block; }
+    </style>
     <!--[if IE]> 
             <script src='http://html5shiv.googlecode.com/svn/trunk/html5.js'></script>
 
-      <style>
-        article, aside, dialog, figure, footer, header,
-        hgroup, menu, nav, section { display: block; }
-      </style>
     <![endif]-->
   </head>
   <body>
@@ -79,6 +81,8 @@
     <!-- §cripts -->
     <!-- others -->
         <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js'></script>
+
+        <script src='assets/array.js'></script>
 
         <script src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.7/jquery-ui.min.js'></script>
 
